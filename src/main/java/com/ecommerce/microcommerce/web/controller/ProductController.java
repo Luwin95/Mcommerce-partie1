@@ -51,7 +51,6 @@ public class ProductController {
     //Récupérer un produit par son Id
     @ApiOperation(value = "Récupère un produit grâce à son ID à condition que celui-ci soit en stock!")
     @GetMapping(value = "/Produits/{id}")
-
     public Product afficherUnProduit(@PathVariable int id) {
 
         Product produit = productDao.findById(id);
@@ -86,7 +85,7 @@ public class ProductController {
     @DeleteMapping (value = "/Produits/{id}")
     public void supprimerProduit(@PathVariable int id) {
 
-        productDao.delete(id);
+        productDao.deleteById(id);
     }
 
     @PutMapping (value = "/Produits")
@@ -101,6 +100,19 @@ public class ProductController {
     public List<Product>  testeDeRequetes(@PathVariable int prix) {
 
         return productDao.chercherUnProduitCher(400);
+    }
+
+    //Calcule la marge entre le prix d'achat et le prix de vente
+    @ApiOperation(value = "Calcule la marge entre le prix d'achat et le prix de vente.")
+    @GetMapping(value="/AdminProduits/{id}")
+    public Integer calculerMargeProduit(@PathVariable int id){
+
+        Product product = productDao.findById(id);
+
+        if(product==null) throw new ProduitIntrouvableException("Le produit avec l'id " + id + " est INTROUVABLE. Écran Bleu si je pouvais.");
+
+        return product.getPrix() - product.getPrixAchat();
+
     }
 
 
